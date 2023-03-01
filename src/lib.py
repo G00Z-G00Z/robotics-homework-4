@@ -1,3 +1,6 @@
+"""
+Author: Eduardo Gomez
+"""
 from dataclasses import dataclass
 from functools import reduce
 
