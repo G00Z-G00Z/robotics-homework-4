@@ -60,8 +60,7 @@ def solve_final_angle(arms: list[Arm]) -> ndarray:
         print(f"T{idx + 1}: ")
         print(mat)
 
-    # Reverse ?? 
-    final_matrix = reduce(lambda prev, next: prev @ next, transform_matrices)
+    final_matrix = reduce(lambda prev, next: next @ prev, transform_matrices[::-1])
 
     print("Final Matrix: ")
     print(final_matrix)
