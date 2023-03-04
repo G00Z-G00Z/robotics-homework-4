@@ -23,11 +23,7 @@ class Effector:
 
     dx: float = 0
     dy: float = 0
-
-    def to_arm(self) -> Arm:
-        theta = np.arctan(self.dy / self.dx)
-        theta = np.rad2deg(theta)
-        return Arm(length=np.sqrt(self.dx**2 + self.dy**2), theta=theta)
+    theta: float = 0
 
 
 def rot2d(theta: float) -> ndarray:
@@ -57,6 +53,18 @@ def arm_to_homogenous_matrix(arm: Arm) -> ndarray:
     Transforms an arm to a homogeneous matrix
     """
     return get_homogenous_matrix_from_len_angle(arm.theta, arm.length)
+
+
+def end_effector_to_homogenous_matrix(effector: Effector) -> ndarray:
+    """
+    Transforms an arm to a homogeneous matrix
+    """
+    rotation = rot2d(effector.theta)
+    translation = np.array([effector.dx, effector.dy])
+    eff_homogeneous_M = np.block(
+        [[rotation, np.reshape(translation, (2, 1))], [np.zeros((1, 2)), 1]]
+    )
+    return eff_homogeneous_M
 
 
 def mul_homogenous_matrixes(transform_matrices: list[ndarray]) -> ndarray:
