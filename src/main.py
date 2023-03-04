@@ -19,7 +19,7 @@ def main():
     left_side_arm_angles = [30, 30, -55, -30, 25]
 
     for theta in left_side_arm_angles:
-        left_side_arms.append(Arm(length=ARMS_NO_PER_SIDE, theta=theta))
+        left_side_arms.append(Arm(length=ARM_LEN, theta=theta))
 
     # End effecto
     l_effector = Effector(dx=0.01, dy=0.25, theta=left_side_arm_angles[-1])
