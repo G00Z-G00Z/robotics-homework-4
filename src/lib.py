@@ -56,6 +56,15 @@ def arm_to_homogenous_matrix(arm: Arm) -> ndarray:
     Transforms an arm to a homogeneous matrix
     """
     return get_homogenous_matrix_from_len_angle(arm.theta, arm.length)
+
+
+def mul_homogenous_matrixes(transform_matrices: list[ndarray]) -> ndarray:
+    """
+    Multiplies a list of homogeneous matrixes, from right to left
+    """
+    return reduce(lambda prev, next: next @ prev, transform_matrices[::-1])
+
+
 def solve_final_angle(arms: list[Arm]) -> ndarray:
     transform_matrices = [
         get_homogenous_matrix_from_len_angle(a.theta, a.length) for a in arms
