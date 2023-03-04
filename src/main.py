@@ -42,28 +42,33 @@ def main():
     print(T_L_5)
     print(T_L_5 @ np.array([0, 0, 1]))
 
-    # # Definition of left side
-    # left_side: list[Arm] = []
+    # Right
+    right_side_arms: list[Arm] = []
+    right_side_arm_angles = [30, 30, -55, -30]
+    # Shifts
+    right_side_arm_angles = [angle for angle in right_side_arm_angles]
 
-    # left_side: list[Arm] = []
-    # left_side_thetas = [30, 30, -55, -30, 25]
+    for theta in right_side_arm_angles:
+        right_side_arms.append(Arm(length=-ARM_LEN, theta=theta))
 
-    # for theta in left_side_thetas:
-    #     left_side.append(Arm(length=ARMS_NO_PER_SIDE, theta=180 - theta))
+    r_homogeneous_m = [arm_to_homogenous_matrix(arm) for arm in right_side_arms]
 
-    # # Last theta is with correct orientation
-    # l_effector = Effector(theta=left_side_thetas[-1], dx=0.01, dy=0.25)
-    # # todo: check if this is correct, i think is not
-    # left_side[-1] = l_effector.to_arm()
+    # End effector
+    r_effector = Effector(dx=-1, dy=-0.25, theta=25)
+    eff_h_m = end_effector_to_homogenous_matrix(r_effector)
 
-    # assert len(left_side) == len(
-    #     right_side
-    # ), "Sides do not have \
-    #         the same number of arms"
+    r_homogeneous_m.append(eff_h_m)
 
-    # for arms in zip(right_side, left_side):
-    #     for a in arms:
-    #         print(a)
+    print("Matrixes")
+    for idx, m in enumerate(r_homogeneous_m):
+        print(f"M{idx + 1}")
+        print(m)
+        pass
+
+    print("Final matrix")
+    T_L_10 = mul_homogenous_matrixes(r_homogeneous_m)
+    print(T_L_10)
+    print(T_L_10 @ np.array([0, 0, 1]))
 
 
 if __name__ == "__main__":
