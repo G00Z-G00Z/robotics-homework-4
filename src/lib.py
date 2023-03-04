@@ -1,29 +1,10 @@
 """
 Author: Eduardo Gomez
 """
-from dataclasses import dataclass
 from functools import reduce
 
 import numpy as np
 from numpy import ndarray
-
-
-@dataclass
-class Arm:
-    """Defines an arm metadata"""
-
-    length: float = 0
-    "Defines the rotation from the x axis in degrees"
-    theta: float = 0
-
-
-@dataclass
-class Effector:
-    """End effector"""
-
-    dx: float = 0
-    dy: float = 0
-    theta: float = 0
 
 
 def rot2d(theta: float) -> ndarray:
@@ -32,39 +13,14 @@ def rot2d(theta: float) -> ndarray:
     return np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
 
 
-def get_homogenous_matrix_from_len_angle(angle: float, length: float) -> ndarray:
+def get_homogenous_matrix_from_rotation_and_translation(
+    rotation: ndarray, translation: ndarray
+) -> ndarray:
     """
-    Gets the homogeneous matrix from angle and length
+    Rotation 2d + Translation 2d, returns a homogeneous matrix
     """
-    # Get the rotation matrix
-    rot = rot2d(angle)
-
-    # Get the coordinates of the end of the arm
-    arm_length = np.array([length, 0])
-    arm_length = np.reshape(arm_length, (2, 1))
-    initial_position: ndarray = rot @ arm_length
-
-    # Block puts the vectors or matrixes together as long as dimension match
-    return np.block([[rot, initial_position], [np.zeros((1, 2)), 1]])
-
-
-def arm_to_homogenous_matrix(arm: Arm) -> ndarray:
-    """
-    Transforms an arm to a homogeneous matrix
-    """
-    return get_homogenous_matrix_from_len_angle(arm.theta, arm.length)
-
-
-def end_effector_to_homogenous_matrix(effector: Effector) -> ndarray:
-    """
-    Transforms an arm to a homogeneous matrix
-    """
-    rotation = rot2d(effector.theta)
-    translation = np.array([effector.dx, effector.dy])
-    eff_homogeneous_M = np.block(
-        [[rotation, np.reshape(translation, (2, 1))], [np.zeros((1, 2)), 1]]
-    )
-    return eff_homogeneous_M
+    translation = np.reshape(translation, (2, 1))
+    return np.block([[rotation, translation], [np.zeros((1, 2)), 1]])
 
 
 def mul_homogenous_matrixes(transform_matrices: list[ndarray]) -> ndarray:
@@ -72,40 +28,3 @@ def mul_homogenous_matrixes(transform_matrices: list[ndarray]) -> ndarray:
     Multiplies a list of homogeneous matrixes, from right to left
     """
     return reduce(lambda prev, next: next @ prev, transform_matrices[::-1])
-
-
-def solve_final_angle(arms: list[Arm]) -> ndarray:
-    transform_matrices = [
-        get_homogenous_matrix_from_len_angle(a.theta, a.length) for a in arms
-    ]
-
-    for idx, mat in enumerate(transform_matrices):
-        print(f"T{idx + 1}: ")
-        print(mat)
-
-    final_matrix = reduce(lambda prev, next: next @ prev, transform_matrices[::-1])
-
-    print("Final Matrix: ")
-    print(final_matrix)
-    print("Final Coord: ")
-    coord = final_matrix[0:2, 2]
-    print(final_matrix[0:2, 2])
-    return coord
-
-
-if __name__ == "__main__":
-    arms_no = 3
-
-    arms = [Arm() for _ in range(arms_no)]
-
-    arms_length = 0.04
-
-    arms[0].length = arms_length
-    arms[0].theta = 30
-    arms[1].length = arms_length
-    arms[1].theta = 30
-    arms[2].length = arms_length
-    arms[2].theta = -55
-
-    solve_final_angle(arms)
-    pass
