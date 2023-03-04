@@ -51,6 +51,11 @@ def get_homogenous_matrix_from_len_angle(angle: float, length: float) -> ndarray
     return np.block([[rot, initial_position], [np.zeros((1, 2)), 1]])
 
 
+def arm_to_homogenous_matrix(arm: Arm) -> ndarray:
+    """
+    Transforms an arm to a homogeneous matrix
+    """
+    return get_homogenous_matrix_from_len_angle(arm.theta, arm.length)
 def solve_final_angle(arms: list[Arm]) -> ndarray:
     transform_matrices = [
         get_homogenous_matrix_from_len_angle(a.theta, a.length) for a in arms
