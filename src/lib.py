@@ -23,10 +23,11 @@ class Effector:
 
     dx: float = 0
     dy: float = 0
-    theta: float = 0
 
     def to_arm(self) -> Arm:
-        return Arm(length=np.sqrt(self.dx**2 + self.dy**2), theta=self.theta)
+        theta = np.arctan(self.dy / self.dx)
+        theta = np.rad2deg(theta)
+        return Arm(length=np.sqrt(self.dx**2 + self.dy**2), theta=theta)
 
 
 def rot2d(theta: float) -> ndarray:

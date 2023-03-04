@@ -22,7 +22,7 @@ def main():
         left_side_arms.append(Arm(length=ARM_LEN, theta=theta))
 
     # End effecto
-    l_effector = Effector(dx=0.01, dy=0.25, theta=left_side_arm_angles[-1])
+    l_effector = Effector(dx=0.01, dy=0.0025)
     left_side_arms[-1] = l_effector.to_arm()
 
     l_homogeneous_m = [arm_to_homogenous_matrix(arm) for arm in left_side_arms]
