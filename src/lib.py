@@ -13,11 +13,17 @@ def rot2d(theta: float) -> ndarray:
     return np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
 
 
-def get_homogenous_matrix_from_rotation_and_translation(
-    rotation: ndarray, translation: ndarray
-) -> ndarray:
+def get_arm_end_coordinates(length: float, angle: float):
     """
-    Rotation 2d + Translation 2d, returns a homogeneous matrix
+    Returns a 2d vector with a final position
+    """
+    angle = np.deg2rad(angle)
+    return np.array([np.cos(angle), np.sin(angle)]) * length
+
+
+def get_homogenous_matrix_rt(rotation: ndarray, translation: ndarray) -> ndarray:
+    """
+    Gets homogeneous matrix from rotation and translation matrixes in 2d
     """
     translation = np.reshape(translation, (2, 1))
     return np.block([[rotation, translation], [np.zeros((1, 2)), 1]])
